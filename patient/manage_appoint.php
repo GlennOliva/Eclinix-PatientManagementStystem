@@ -33,21 +33,50 @@ if(!isset($_SESSION['patient_id']))
     <!-- Begin row -->
     <div class="row">
         <!-- First column: Upcoming Visit -->
-        <div class="col-md-5"> <!-- Use 5 columns out of 12 for a slightly smaller split -->
-            <div class="content-data">
-                <div class="head">
-                    <h3>Upcoming Visit</h3>
-                </div>
-                <div class="container mt-3 table-border">
-                    <ul>
-                        <li><strong>Patient Name:</strong> John Doe</li>
-                        <li><strong>Date:</strong> May 3, 2024</li>
-                        <li><strong>Time:</strong> 2:00 PM</li>
-                        <li><strong>Reason:</strong> Annual Checkup</li>
-                    </ul>
-                </div>
-            </div>
+
+        <?php
+        $sql = "SELECT * FROM tbl_appoint";
+
+        $res = mysqli_query($conn,$sql);
+
+        if($res == true)
+        {
+            $count = mysqli_num_rows($res);
+
+            if($count > 0)
+            {
+                while($row = mysqli_fetch_assoc($res))
+                {
+                    $full_name = $row['full_name'];
+                    $date_raw = $row['date'];
+            $date_formatted = date('F d, Y', strtotime($date_raw));
+
+            // Format the time to "hh:mm AM/PM"
+            $time_raw = $row['time'];
+            $time_formatted = date('h:i A', strtotime($time_raw));
+                    $reason = $row['reason'];
+                }
+                
+            }
+        }
+        
+        ?>
+       <div class="col-md-5"> <!-- Use 5 columns out of 12 for a slightly smaller split -->
+    <div class="content-data">
+        <div class="head">
+            <h3>Upcoming Visit</h3>
         </div>
+        <div class="container mt-3 table-border">
+            <ul>
+                <li><strong>Patient Name:</strong> <?php echo htmlspecialchars($full_name); ?></li>
+                <li><strong>Date:</strong> <?php echo htmlspecialchars($date_formatted); ?></li>
+                <li><strong>Time:</strong> <?php echo htmlspecialchars($time_formatted); ?></li>
+                <li><strong>Reason:</strong> <?php echo htmlspecialchars($reason); ?></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 
         <!-- Second column: Booked Appointment -->
         <div class="col-md-7"> <!-- Use 7 columns for the second part for a larger table -->
@@ -65,15 +94,59 @@ if(!isset($_SESSION['patient_id']))
                                 <th style="background-color: #FFAA2B !important;">Appointment Time</th>
                             </tr>
                         </thead>
-                        <tbody>
+
+                        
+        <?php
+        $sql = "SELECT * FROM tbl_appoint";
+
+        $res = mysqli_query($conn,$sql);
+
+        if($res == true)
+        {
+            $count = mysqli_num_rows($res);
+            $ids = 1;
+            if($count > 0)
+            {
+                while($row = mysqli_fetch_assoc($res))
+                {
+                    $id = $row['id'];
+                    $full_name = $row['full_name'];
+                    $date_raw = $row['date'];
+            $date_formatted = date('F d, Y', strtotime($date_raw));
+
+            // Format the time to "hh:mm AM/PM"
+            $time_raw = $row['time'];
+            $time_formatted = date('h:i A', strtotime($time_raw));
+                    $reason = $row['reason'];
+
+
+                    ?>
+
+
+
+                            <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>John Doe</td>
-                                <td>May 3, 2024</td>
-                                <td>2:00 PM</td>
+                                <td><?php echo $ids++;?></td>
+                                <td><?php echo $full_name;?></td>
+                                <td><?php echo htmlspecialchars($date_formatted);?></td>
+                                <td> <?php echo htmlspecialchars($time_formatted); ?></td>
                             </tr>
                             <!-- More rows can be added here -->
                         </tbody>
+
+
+                        <?php
+                }
+                
+            }
+        }
+        
+        ?>
+    
+                        
+
+                
+                        
                     </table>
                     
                 </div>

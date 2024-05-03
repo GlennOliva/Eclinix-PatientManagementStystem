@@ -45,20 +45,60 @@ if(!isset($_SESSION['admin_id']))
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>johndoe@example.com</td>
-                            <td>johndoe@example.com</td>
-                            <td>jApprove</td>
-                            <td>adsdas</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" >Delete</button>
-                            </td>
-                        </tr>
-                        <!-- More rows can be added here -->
-                    </tbody>
+                    <?php
+        $sql = "SELECT * FROM tbl_appoint WHERE status = 'Approve'";
+
+        $res = mysqli_query($conn,$sql);
+
+        if($res == true)
+        {
+            $count = mysqli_num_rows($res);
+            $ids = 1;
+            if($count > 0)
+            {
+                while($row = mysqli_fetch_assoc($res))
+                {
+                    $id = $row['id'];
+                    $full_name = $row['full_name'];
+                    $date_raw = $row['date'];
+            $date_formatted = date('F d, Y', strtotime($date_raw));
+
+            // Format the time to "hh:mm AM/PM"
+            $time_raw = $row['time'];
+            $time_formatted = date('h:i A', strtotime($time_raw));
+                    $reason = $row['reason'];
+                    $status = $row['status'];
+
+
+                    ?>
+
+
+
+                            <tbody>
+                            <tr>
+                                <td><?php echo $ids++;?></td>
+                                <td><?php echo $full_name;?></td>
+                                <td><?php echo htmlspecialchars($date_formatted);?></td>
+                                <td> <?php echo htmlspecialchars($time_formatted); ?></td>
+                                <td><?php echo $reason;?></td>
+                                <td><?php echo $status;?></td>
+                                <td>
+                                <form action="code.php" method="post">
+                                    <button type="button"  class="btn-del delete_appointbtn" value="<?= $id;?>">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <!-- More rows can be added here -->
+                        </tbody>
+
+
+                        <?php
+                }
+                
+            }
+        }
+        
+        ?>
                 </table>
             </div>
 
@@ -70,5 +110,6 @@ if(!isset($_SESSION['admin_id']))
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../script.js"></script>
+    <script src="js/appoint.js"></script>
 </body>
 </html>

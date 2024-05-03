@@ -126,17 +126,17 @@ if(!isset($_SESSION['admin_id']))
 					</div>
 				
 					<?php
-				// // Assuming $conn is your database connection and is already opened
+				// Assuming $conn is your database connection and is already opened
 
-				// $sql = "SELECT COUNT(*) AS count FROM tbl_appoint";
-				// $res = mysqli_query($conn, $sql);
+				$sql = "SELECT COUNT(*) AS count FROM tbl_appoint";
+				$res = mysqli_query($conn, $sql);
 
-				// if ($res) {
-				// 	$row = mysqli_fetch_assoc($res);
-				// 	$appointCount = $row['count']; // Directly access the count
-				// } else {
-				// 	$appointCount = 0; // In case the query fails
-				// }
+				if ($res) {
+					$row = mysqli_fetch_assoc($res);
+					$appointCount = $row['count']; // Directly access the count
+				} else {
+					$appointCount = 0; // In case the query fails
+				}
 				?>
 
 
@@ -144,7 +144,7 @@ if(!isset($_SESSION['admin_id']))
 				<div class="card">
 					<div class="head">
 						<div>
-							<h2></h2>
+							<h2><?php echo $appointCount;?></h2>
 							<p>Total Appointment.</p>
 						</div>
 						<i class='bx bx-book icon' ></i>
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <!-- Begin row -->
     <div class="row">
         <!-- First column: Booked Appointment -->
-        <div class="col-md-5"> <!-- Use 6 columns out of 12 for a 50/50 split -->
+        <div class="col-md-6"> <!-- Use 6 columns out of 12 for a 50/50 split -->
             <div class="content-data">
                 <div class="head">
                     <h3>Booked Appointment</h3>
@@ -370,32 +370,70 @@ document.addEventListener('DOMContentLoaded', function () {
                             <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
                         </div>
                     </div>
-                    <table class="table table-hover" style="width: 30%;">
-                        <thead class="thead-dark">
+                    <table class="table table-hover" id="patientTable" id="admin_table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient Full_name</th>
+                            <th>Appointment Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <?php
+        $sql = "SELECT * FROM tbl_appoint";
+
+        $res = mysqli_query($conn,$sql);
+
+        if($res == true)
+        {
+            $count = mysqli_num_rows($res);
+            $ids = 1;
+            if($count > 0)
+            {
+                while($row = mysqli_fetch_assoc($res))
+                {
+                    $id = $row['id'];
+                    $full_name = $row['full_name'];
+
+            // Format the time to "hh:mm AM/PM"
+            $time_raw = $row['time'];
+            $time_formatted = date('h:i A', strtotime($time_raw));
+                    $status = $row['status'];
+
+
+                    ?>
+
+
+
+                            <tbody>
                             <tr>
-                                <th>Queue</th>
-                                <th>ID</th>
-                                <th>Patient Name</th>
-                                <th>Status</th>
-                                <th>Time</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>110</td>
-                                <td>John</td>
-                                <td>Old</td>
-                                <td>1:00 am</td>
+                                <td><?php echo $ids++;?></td>
+                                <td><?php echo $full_name;?></td>
+                                <td> <?php echo htmlspecialchars($time_formatted); ?></td>
+                                <td><?php echo $status;?></td>
                                 <td>
-                                    <a href="update_appoint.php" class="btn btn-primary btn-sm">Update</a>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                <a href="update_appoint.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
+                                <form action="code.php" method="post">
+                                    <button type="button"  class="btn-del delete_appointbtn" value="<?= $id;?>">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                             <!-- More rows can be added here -->
                         </tbody>
-                    </table>
+
+
+                        <?php
+                }
+                
+            }
+        }
+        
+        ?>
+                       
+              
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
@@ -427,7 +465,7 @@ if ($result->num_rows > 0) {
 ?>
 
         <!-- Second column: Medical Supplies -->
-        <div class="col-md-7"> <!-- Use 6 columns for the second part -->
+        <div class="col-md-6"> <!-- Use 6 columns for the second part -->
             <div class="content-data">
                 <div class="head">
                     <h3>Medical Supplies</h3>
@@ -518,9 +556,45 @@ document.addEventListener('DOMContentLoaded', function () {
 		</main>
 		<!-- MAIN -->
 	</section>
+
+
+    <script>
+document.getElementById('searchButton').addEventListener('click', () => {
+    filterTable();
+});
+
+document.getElementById('searchInput').addEventListener('keyup', () => {
+    filterTable();
+});
+
+function filterTable() {
+    // Get the input field value
+    var input = document.getElementById('searchInput').value.toLowerCase();
+
+    // Get the table rows
+    var rows = document.querySelectorAll('#patientTable tbody tr');
+
+    rows.forEach(row => {
+        // Check if any cell content matches the search term
+        var match = false;
+        var cells = row.querySelectorAll('td');
+
+        cells.forEach(cell => {
+            if (cell.textContent.toLowerCase().includes(input)) {
+                match = true;
+            }
+        });
+
+        // Show or hide the row based on whether it matches
+        row.style.display = match ? '' : 'none';
+    });
+}
+</script>
+
 	<!-- NAVBAR -->
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../script.js"></script>
+    <script src="js/appoint.js"></script>
 </body>
 </html>

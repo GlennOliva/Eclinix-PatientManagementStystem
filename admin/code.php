@@ -174,5 +174,34 @@ $count2 = mysqli_fetch_array($result);
         echo 6;
     }
 }
+else if(isset($_POST['delete_appointbtn']))
+{
+    $id = $_POST['appoint_id'];
+      //Create SQL query to delete admin
+$sql = "SELECT * FROM tbl_appoint WHERE id=$id";
+
+// Execute the query
+$result = mysqli_query($conn, $sql);
+
+$count2 = mysqli_fetch_array($result);
+
+
+
+
+   $sql1 = "DELETE FROM tbl_appoint WHERE id=$id";
+   $result1 = mysqli_query($conn,$sql1);
+
+   if($result1)
+   {
+    
+
+        echo 10;
+
+    }
+    else
+    {
+        echo 15;
+    }
+}
 
 ?>

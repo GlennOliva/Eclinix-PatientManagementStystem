@@ -6,6 +6,8 @@ include('../config/dbcon.php');
 
 <?php
 if(!isset($_SESSION['patient_id']))
+
+
 {
     echo '<script>
                                     swal({
@@ -18,6 +20,7 @@ if(!isset($_SESSION['patient_id']))
                                 </script>';
                                 exit;
 }
+
 
 ?>
 
@@ -75,6 +78,48 @@ if(!isset($_SESSION['patient_id']))
 		</main>
 		<!-- MAIN -->
 
+    
+
+    <?php
+    if(isset($_SESSION['patient_id']))
+    {
+      $patient_id = $_SESSION['patient_id'];
+
+      $sql = "SELECT * FROM tbl_patient WHERE id = $patient_id";
+
+    $res = mysqli_query($conn, $sql);
+
+
+//check if the query is executed or not!
+if($res == True)
+{
+    //check if the query is executed or not!
+if ($res == True) {
+  // Check if the data is available or not
+  $count = mysqli_num_rows($res); // Should use $res, not $result
+
+  if ($count > 0) {
+      // Get the data
+      $rows = mysqli_fetch_assoc($res);
+
+      // These lines set the variable you want
+      $id = $rows['id'];
+      $full_name = $rows['full_name']; 
+  } else {
+      // Redirect if no data found
+      header('Location: manage_profile.php');
+      exit();
+  }
+} else {
+  // Handle query failure
+  echo 'Error executing query';
+}
+}
+    }
+    
+
+    ?>
+
 
         <!-- Bootstrap Modal -->
 <div
@@ -100,7 +145,7 @@ if(!isset($_SESSION['patient_id']))
         </button>
       </div>
       <div class="modal-body">
-        <form id="appointmentForm">
+        <form id="appointmentForm" method="post">
           <div class="form-group">
             <label for="patientName">Patient Name</label>
             <input
@@ -109,6 +154,8 @@ if(!isset($_SESSION['patient_id']))
               id="patientName"
               name="patient_name"
               placeholder="Enter patient name"
+              value="<?php echo $full_name;?>"
+              readonly
             />
           </div>
           <div class="form-group">
@@ -144,15 +191,66 @@ if(!isset($_SESSION['patient_id']))
               name="reason"
             ></textarea>
           </div>
+          <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="closeAppointment()">Cancel</button>
+        <button type="submit" name="add_appoint" class="btn btn-primary">Submit</button>
+      </div>
         </form>
       </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" onclick="closeAppointment()">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="submitAppointment()">Submit</button>
-      </div>
+     
     </div>
   </div>
 </div>
+
+
+<?php
+if (isset($_POST['add_appoint'])) {
+    $patient_name = $_POST['patient_name'];
+    $patient_date = $_POST['date'];
+    $patient_time = $_POST['time'];
+    $patient_reason = $_POST['reason'];
+
+    // Check for existing appointment at the same date and time
+    $check_sql = "SELECT * FROM tbl_appoint WHERE date = '$patient_date' AND time = '$patient_time'";
+    $result = mysqli_query($conn, $check_sql);
+
+    if (mysqli_num_rows($result) > 0) {
+        // There's already an appointment at this date and time
+        echo '<script>
+            swal({
+                title: "Error",
+                text: "The selected time is already booked. Please choose a different time.",
+                icon: "error"
+            });
+        </script>';
+    } else {
+        // Insert new appointment data
+        $insert_sql = "INSERT INTO tbl_appoint (full_name, date, time, reason , patient_id)
+                       VALUES ('$patient_name', '$patient_date', '$patient_time', '$patient_reason', '$patient_id')";
+
+        if (mysqli_query($conn, $insert_sql)) {
+            echo '<script>
+                swal({
+                    title: "Success",
+                    text: "Appointment Successfully Booked!",
+                    icon: "success"
+                }).then(function() {
+                    window.location = "manage_calendar.php";
+                });
+            </script>';
+        } else {
+            echo '<script>
+                swal({
+                    title: "Error",
+                    text: "Failed to book appointment.",
+                    icon: "error"
+                });
+            </script>';
+        }
+    }
+}
+?>
+
 
 
 
@@ -182,18 +280,7 @@ $('#appointmentModal').modal('show'); // Open the moda
             console.log("Clicked date:", info.dateStr);
             // You can add additional code to handle the non-Sunday date click
         },
-        events: [
-            {
-                title: 'Doctor Appointment',
-                start: '2024-05-03T14:00:00',
-                end: '2024-05-03T15:00:00'
-            },
-            {
-                title: 'Dental Checkup',
-                start: '2024-05-10T10:00:00',
-                end: '2024-05-10T11:00:00'
-            },
-        ],
+     
     });
 
     calendar.render();
@@ -201,32 +288,14 @@ $('#appointmentModal').modal('show'); // Open the moda
 </script>
 
 
-<script>
-function submitAppointment() {
-    var patientName = document.getElementById('patientName').value;
-    var appointmentDate = document.getElementById('appointmentDate').value;
-    var appointmentTime = document.getElementById('appointmentTime').value;
-    var appointmentReason = document.getElementById('appointmentReason').value;
+ <script>
 
-    // Do something with the appointment data
-    // For example, send it to the backend via AJAX or add it to the FullCalendar events
-
-    console.log('Appointment Details:', {
-        patientName,
-        appointmentDate,
-        appointmentTime,
-        appointmentReason,
-    });
-
-    // Close the modal after submitting
-    $('#appointmentModal').modal('hide');
-}
 
 function closeAppointment()
 {
     $('#appointmentModal').modal('hide');
 }
-</script>
+</script> 
 
 
 <script>

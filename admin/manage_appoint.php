@@ -31,13 +31,13 @@ if(!isset($_SESSION['admin_id']))
 			</ul>
 
             <div class="container mt-3 table-border">
-                <div class="input-group mb-3" style="width: 30%;">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search Patient">
-                    <div class="input-group-append" style="padding-left: 10px;">
-                        <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-                    </div>
-                </div>
-                <table class="table table-hover">
+            <div class="input-group mb-3" style="width: 30%;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search Patient">
+            <div class="input-group-append" style="padding-left: 10px;">
+                <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+            </div>
+        </div>
+                <table class="table table-hover" id="patientTable" id="admin_table">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
@@ -49,20 +49,63 @@ if(!isset($_SESSION['admin_id']))
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>johndoe@example.com</td>
-                            <td>johndoe@example.com</td>
-                            <td>johndoe@example.com</td>
-                            <td>Pending</td>
-                            <td>
-                            <a href="update_appoint.php" class="btn btn-primary btn-sm">Update</a>
-                                <button class="btn btn-danger btn-sm" >Delete</button>
-                            </td>
-                        </tr>
-                        <!-- More rows can be added here -->
+                    <?php
+        $sql = "SELECT * FROM tbl_appoint";
+
+        $res = mysqli_query($conn,$sql);
+
+        if($res == true)
+        {
+            $count = mysqli_num_rows($res);
+            $ids = 1;
+            if($count > 0)
+            {
+                while($row = mysqli_fetch_assoc($res))
+                {
+                    $id = $row['id'];
+                    $full_name = $row['full_name'];
+                    $date_raw = $row['date'];
+            $date_formatted = date('F d, Y', strtotime($date_raw));
+
+            // Format the time to "hh:mm AM/PM"
+            $time_raw = $row['time'];
+            $time_formatted = date('h:i A', strtotime($time_raw));
+                    $reason = $row['reason'];
+                    $status = $row['status'];
+
+
+                    ?>
+
+
+
+                            <tbody>
+                            <tr>
+                                <td><?php echo $ids++;?></td>
+                                <td><?php echo $full_name;?></td>
+                                <td><?php echo htmlspecialchars($date_formatted);?></td>
+                                <td> <?php echo htmlspecialchars($time_formatted); ?></td>
+                                <td><?php echo $reason;?></td>
+                                <td><?php echo $status;?></td>
+                                <td>
+                                <a href="update_appoint.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
+                                <form action="code.php" method="post">
+                                    <button type="button"  class="btn-del delete_appointbtn" value="<?= $id;?>">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <!-- More rows can be added here -->
+                        </tbody>
+
+
+                        <?php
+                }
+                
+            }
+        }
+        
+        ?>
+                       
+              
                     </tbody>
                 </table>
             </div>
@@ -73,7 +116,42 @@ if(!isset($_SESSION['admin_id']))
 	</section>
 	<!-- NAVBAR -->
 
+
+    <script>
+document.getElementById('searchButton').addEventListener('click', () => {
+    filterTable();
+});
+
+document.getElementById('searchInput').addEventListener('keyup', () => {
+    filterTable();
+});
+
+function filterTable() {
+    // Get the input field value
+    var input = document.getElementById('searchInput').value.toLowerCase();
+
+    // Get the table rows
+    var rows = document.querySelectorAll('#patientTable tbody tr');
+
+    rows.forEach(row => {
+        // Check if any cell content matches the search term
+        var match = false;
+        var cells = row.querySelectorAll('td');
+
+        cells.forEach(cell => {
+            if (cell.textContent.toLowerCase().includes(input)) {
+                match = true;
+            }
+        });
+
+        // Show or hide the row based on whether it matches
+        row.style.display = match ? '' : 'none';
+    });
+}
+</script>
+
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../script.js"></script>
+    <script src="js/appoint.js"></script>
 </body>
 </html>

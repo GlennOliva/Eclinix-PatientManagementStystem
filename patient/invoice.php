@@ -78,10 +78,27 @@ if(!isset($_SESSION['patient_id'])) {
     <div class="divider"></div>
 
     <!-- Patient information section -->
+    <?php
+                $sql = "SELECT p.id , p.date , p.full_name , p.address, r.age, r.prescriptions
+                FROM tbl_patient as p JOIN tbl_records as r ON p.id = r.patient_id WHERE p.id = $patient_id";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $count = mysqli_num_rows($result);
+                    $ids = 1;
+                    if ($count > 0) {
+                        while ($rows = mysqli_fetch_assoc($result)) {
+                            $id = $rows['id'];
+                            $full_name = $rows['full_name'];
+                            $address = $rows['address'];
+                            $age = $rows['age'];
+                            $prescriptions = $rows['prescriptions'];
+                            $date = $rows['date'];
+                            $date_formatted = date('F d, Y', strtotime($date));
+                            ?>
     <div class="row">
-    <div class="column">Patient Name: John Doe</div> <!-- Left aligned -->
+    <div class="column">Patient Name: <?php echo $full_name;?></div> <!-- Left aligned -->
     <div class="column" style="display: flex; justify-content: flex-end;">
-        <div style="margin-right: 10px;">Age: 12</div> <!-- Right aligned -->
+        <div style="margin-right: 10px;">Age: <?php echo $age;?></div> <!-- Right aligned -->
         <div>Sex: Male</div> <!-- Right aligned -->
     </div>
 </div>
@@ -89,9 +106,9 @@ if(!isset($_SESSION['patient_id'])) {
 
 
 <div class="row">
-<div class="column">Address: 123 Main St, Novaliches, Quezon City</div> <!-- Patient address -->
+<div class="column">Address: <?php echo $address;?></div> <!-- Patient address -->
     <div class="column" style="display: flex; justify-content: flex-end;">
-        <div style="margin-right: 10px;">Date: May 4, 2024</div> <!-- Right aligned -->
+        <div style="margin-right: 10px;">Date: <?php echo htmlspecialchars($date_formatted);?></div> <!-- Right aligned -->
        
     </div>
 </div>
@@ -101,7 +118,7 @@ if(!isset($_SESSION['patient_id'])) {
     <!-- Rx image section -->
     <div style="display: flex; align-items: center;"> <!-- Flexbox for horizontal alignment -->
     <img src="images/rxlogo.png" alt="Rx" class="prescription-image" style="margin-right: 10px;"> <!-- Image with margin-right -->
-    <p>Here is some content beside the image.</p> <!-- Content beside the image -->
+    <p><?php echo $prescriptions;?></p> <!-- Content beside the image -->
 </div>
 
 
@@ -115,6 +132,12 @@ if(!isset($_SESSION['patient_id'])) {
        
     </div>
 </div>
+
+<?php
+                        }
+                    }
+                }
+                ?>
 
 <div class="row">
     <div class="column" style="display: flex; justify-content: flex-end;">
