@@ -35,7 +35,7 @@ if(!isset($_SESSION['admin_id']))
                     <div class="col-lg-8">
                         <form method="post" enctype="multipart/form-data" style="box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 20px; border-radius: 12px;">
                             <div class="mb-3">
-                                <label for="inventoryImage" class="form-label">Medical Image</label>
+                                <label for="inventoryImage" class="form-label">Image</label>
                                 <input type="file" class="form-control" name="medicalImage">
                             </div>
                             <div class="mb-3">
@@ -43,7 +43,7 @@ if(!isset($_SESSION['admin_id']))
                                 <input type="text" class="form-control" name="medicalName" placeholder="Enter Medical Name">
                             </div>
                             <div class="mb-3">
-                                <label for="adminEmail" class="form-label">Medical Slot</label>
+                                <label for="adminEmail" class="form-label">Quantity</label>
                                 <input type="number" class="form-control" name="medicalSlot" placeholder="Enter Medical slot">
                             </div>
                             
@@ -56,9 +56,7 @@ if(!isset($_SESSION['admin_id']))
             </div>
 			
             <?php
-            if(isset($_SESSION['admin_id']))
-            {
-                $admin_id = $_SESSION['admin_id'];
+
         if(isset($_POST['add_medical']))
         {
             $medicalName = $_POST['medicalName'];
@@ -120,7 +118,7 @@ if(!isset($_SESSION['admin_id']))
 
     //SQL query to save the data into database
     $sql = "INSERT INTO tbl_medical SET  medical_name = '$medicalName' , medical_slot = $medicalSlot, 
-     image = '$image_name', created_at = NOW(), admin_id = $admin_id
+     image = '$image_name', created_at = NOW()
     ";
 
     //execute query to insert data in database
@@ -158,7 +156,7 @@ else{
 exit;
 }
 }
-        }
+
         
         ?>
 			

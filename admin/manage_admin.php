@@ -23,21 +23,14 @@ if(!isset($_SESSION['admin_id']))
 
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Manage User</h1>
+			<h1 class="title">Manage Doctor</h1>
 			<ul class="breadcrumbs">
 				<li><a href="#">Admin</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Manage User</a></li>
+				<li><a href="#" class="active">Manage Doctor</a></li>
 			</ul>
 
-            <div class="container mt-3 table-border">
-            <div class="input-group mb-3" style="width: 30%;">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search Patient">
-            <div class="input-group-append" style="padding-left: 10px;">
-                <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-            </div>
-        </div>
-                <a href="add_admin.php" class="btn btn-success btn-sm">Create</a>
+                <a href="add_admin.php" class="btn btn-success btn-sm">Sub Admin</a>
                 <table class="table table-hover"  id="admin_table">
                     <thead class="thead-dark">
                         <tr>
@@ -98,9 +91,9 @@ if(!isset($_SESSION['admin_id']))
                             <td><?php echo $status;?></td>
                             <td>
                                 <a href="update_admin.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
-                                <form action="code.php" method="post">
+                                <!-- <form action="code.php" method="post">
                                     <button type="button"  class="btn-del delete_adminbtn" value="<?= $id;?>">Delete</button>
-                                    </form>
+                                    </form> -->
                             </td>
                         </tr>
                         <!-- More rows can be added here -->

@@ -1,5 +1,5 @@
 <?php
-include('../components/header-user.php');
+include('../components/header-staffs.php');
 include('../config/dbcon.php');
 
 ?>
@@ -98,9 +98,9 @@ if(!isset($_SESSION['admin_id']))
                             <td><?php echo $status;?></td>
                             <td>
                                 <a href="update_staff.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
-                                <form action="code.php" method="post">
+                                <!-- <form action="code.php" method="post">
                                     <button type="button"  class="btn-del delete_staffbtn" value="<?= $id;?>">Delete</button>
-                                    </form>
+                                    </form> -->
                             </td>
                         </tr>
                         <!-- More rows can be added here -->

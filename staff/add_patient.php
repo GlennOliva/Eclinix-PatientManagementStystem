@@ -119,7 +119,7 @@ function sendEmail($to, $patient_password, $patient_email, $patient_name)
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('eclinixpediatric@gmail.com', $patient_name); // Replace 'Your Name' with your desired sender name
+        $mail->setFrom('eclinixpediatric@gmail.com', 'Ocampos Children & Maternity Clinic.'); // Replace 'Your Name' with your desired sender name
         $mail->addAddress($to);
 
         // Content

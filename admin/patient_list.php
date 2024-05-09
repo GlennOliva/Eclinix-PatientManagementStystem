@@ -47,7 +47,6 @@ if(!isset($_SESSION['admin_id'])) {
                     <th>Phone_number</th>
                     <th>Patient Image</th>
                     <th>Medical Contdition</th>
-                    <th>Status</th>
                    
                 </tr>
             </thead>
@@ -68,7 +67,6 @@ if(!isset($_SESSION['admin_id'])) {
                             $phone_number = $rows['phone_number'];
                             $image_name = $rows['image'];
                             $medical_condtion = $rows['illness'];
-                            $status = $rows['status'];
                             ?>
                             <tr>
                                 <td><?php echo $ids++; ?></td>
@@ -78,7 +76,6 @@ if(!isset($_SESSION['admin_id'])) {
                                 <td><?php echo $phone_number; ?></td>
                                 <td><img src="patient_image/<?php echo $image_name ?>" style="width: 70px;"></td>
                                 <td><?php echo $medical_condtion; ?></td>
-                                <td><?php echo $status; ?></td>
                                
                             </tr>
                             <?php

@@ -35,7 +35,7 @@ if(!isset($_SESSION['patient_id'])) {
         <table class="table table-hover" id="patientTable" id="admin_table">
             <thead  >
                 <tr>
-                    <th style="background-color: #FFAA2B !important;">Title</th>
+                    <th style="background-color: #FFAA2B !important;">Id</th>
                     <th style="background-color: #FFAA2B !important;">Date</th>
                     <th style="background-color: #FFAA2B !important;">Diagnosis</th>
                     <th style="background-color: #FFAA2B !important;">Actions</th>
@@ -45,32 +45,55 @@ if(!isset($_SESSION['patient_id'])) {
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT p.id , p.date , r.illness , r.prescriptions
-                FROM tbl_patient as p JOIN tbl_records as r ON p.id = r.patient_id WHERE p.id = $patient_id";
-                $result = mysqli_query($conn, $sql);
-                if ($result) {
-                    $count = mysqli_num_rows($result);
-                    $ids = 1;
-                    if ($count > 0) {
-                        while ($rows = mysqli_fetch_assoc($result)) {
-                            $id = $rows['id'];
-                            $prescriptions = $rows['prescriptions'];
-                            $date = $rows['date'];
-                            $medical_condtion = $rows['illness'];
-                            ?>
-                            <tr>
-                                <td><?php echo $prescriptions; ?></td>
-                                <td><?php echo $date; ?></td>
-                                <td><?php echo $medical_condtion; ?></td>
-                                <td>
-                                <a href="invoice.php?<?php echo $id; ?>" >
-  <i class="bx bx-show"></i>
-</a>
+          $sql = "SELECT 
+          r.id as record_id,  -- Using an alias for clarity
+          r.patient_id,
+          r.medical_id,
+          r.treatment,
+          r.prescriptions,
+          r.illness,
+          r.laboratory_req,
+          r.age,
+          p.date  -- Assuming date comes from tbl_patient or elsewhere
+      FROM 
+          tbl_records as r
+      JOIN 
+          tbl_patient as p 
+      ON 
+          r.patient_id = p.id 
+      WHERE 
+          r.patient_id = $patient_id";  // Ensure the correct patient_id is used
 
-                            </td>
-                               
-                            </tr>
-                            <?php
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+  $count = mysqli_num_rows($result);
+  if ($count > 0) {
+      while ($row = mysqli_fetch_assoc($result)) {
+          // Extract the record ID and other details from the query result
+          $record_id = $row['record_id'];  // ID of the record from tbl_records
+          $treatment = $row['treatment'];
+          $prescriptions = $row['prescriptions'];
+          $illness = $row['illness'];
+          $laboratory_req = $row['laboratory_req'];
+          $age = $row['age'];
+          $date = $row['date'];
+
+          // Output the data into a table row, ensuring data is sanitized
+          ?>
+          <tr>
+              <td><?php echo htmlspecialchars($record_id); ?></td>
+              <td><?php echo htmlspecialchars($date); ?></td>
+              <td><?php echo htmlspecialchars($prescriptions); ?></td>
+           
+              <td>
+                  <!-- Pass the record ID as a query parameter to the invoice.php page -->
+                  <a href="invoice.php?record_id=<?php echo $record_id; ?>">
+                      <i class="bx bx-show"></i>
+                  </a>
+              </td>
+          </tr>
+          <?php
                         }
                     }
                 }

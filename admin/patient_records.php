@@ -83,8 +83,8 @@ if(!isset($_SESSION['admin_id'])) {
                                 <td><?php echo $prescriptions; ?></td>
                                 <td>
                                     <a href="update_patient_records.php?id=<?php echo $id; ?>" class="btn btn-primary btn-sm">Update</a>
-                                    <form action="code.php" method="post">
-                                        <button type="button" class="btn-del delete_patientrecordsbtn" value="<?= $id; ?>">Delete</button>
+                                    <form  method="post">
+                                        <button type="button" class="btn-del " value="<?php echo $id; ?>">Archive</button>
                                     </form>
                                 </td>
                             </tr>
@@ -97,6 +97,37 @@ if(!isset($_SESSION['admin_id'])) {
         </table>
     </div>
 </main>
+
+<script>
+   document.querySelectorAll('.btn-del').forEach((button) => {
+    button.addEventListener('click', function () {
+        const recordId = this.getAttribute('value');
+
+        if (confirm("Are you sure you want to archive this patient record?")) {
+            fetch('archives-records.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${recordId}`, // Sending the record ID to archive
+            })
+            .then((response) => response.json()) // Parsing the JSON response
+            .then((data) => {
+                if (data.success) {
+                    this.closest('tr').style.display = 'none'; // Hides the row upon successful archiving
+                } else {
+                    alert("Failed to archive the patient records: " + (data.error || 'Unknown error')); // Enhanced error handling
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error); // Log errors
+                alert("An error occurred while archiving the patient records."); // General error handling
+            });
+        }
+    });
+});
+
+</script>
 
 <!-- JavaScript to filter the table -->
 <script>

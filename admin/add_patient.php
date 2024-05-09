@@ -1,5 +1,5 @@
 <?php
-include('../components/header-user.php');
+include('../components/header-patients.php');
 include('../config/dbcon.php');
 
 
@@ -56,7 +56,6 @@ if(!isset($_SESSION['admin_id']))
                                         <option value="">Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
-                                        <option value="Lgbtq">Lgbtq</option>
                                     </select>
                                 </div>
                             <!-- Date of Birth Field -->
@@ -119,7 +118,7 @@ function sendEmail($to, $patient_password, $patient_email, $patient_name)
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('eclinixpediatric@gmail.com', $patient_name); // Replace 'Your Name' with your desired sender name
+        $mail->setFrom('eclinixpediatric@gmail.com', 'Ocampos Children & Maternity Clinic.'); // Replace 'Your Name' with your desired sender name
         $mail->addAddress($to);
 
         // Content

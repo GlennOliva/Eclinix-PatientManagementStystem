@@ -48,7 +48,6 @@ if(!isset($_SESSION['staff_id'])) {
                     <th>Address</th>
                     <th>Phone_number</th>
                     <th>Image</th>
-                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -69,7 +68,6 @@ if(!isset($_SESSION['staff_id'])) {
                             $address = $rows['address'];
                             $phone_number = $rows['phone_number'];
                             $image_name = $rows['image'];
-                            $status = $rows['status'];
                             ?>
                             <tr>
                                 <td><?php echo $ids++; ?></td>
@@ -80,12 +78,11 @@ if(!isset($_SESSION['staff_id'])) {
                                 <td><?php echo $address; ?></td>
                                 <td><?php echo $phone_number; ?></td>
                                 <td><img src="../admin/patient_image/<?php echo $image_name ?>" style="width: 70px;"></td>
-                                <td><?php echo $status; ?></td>
                                 <td>
                                     <a href="update_patient.php?id=<?php echo $id; ?>" class="btn btn-primary btn-sm">Update</a>
-                                    <form action="code.php" method="post">
+                                    <!-- <form action="code.php" method="post">
                                         <button type="button" class="btn-del delete_patientbtn" value="<?= $id; ?>">Delete</button>
-                                    </form>
+                                    </form> -->
                                 </td>
                             </tr>
                             <?php

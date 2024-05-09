@@ -22,13 +22,37 @@ if(!isset($_SESSION['admin_id']))
 
 ?>
 
+
+<style>
+/* Define CSS classes for warning colors */
+.green {
+    color: lightgreen !important;
+
+}
+
+
+
+.yellow {
+    color: yellow !important;
+}
+
+.orange {
+    color: orange !important;
+}
+
+.red {
+    color: red !important;
+}
+
+</style>
+
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Manage Inventory</h1>
+			<h1 class="title">Manage Medicals</h1>
 			<ul class="breadcrumbs">
 				<li><a href="#">Admin</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Manage Inventory</a></li>
+				<li><a href="#" class="active">Manage Medicals</a></li>
 			</ul>
 
             <div class="container mt-3 table-border">
@@ -37,9 +61,9 @@ if(!isset($_SESSION['admin_id']))
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Medical Image</th>
+                            <th>Image</th>
                             <th>Medical Name</th>
-                            <th>Medical slot</th>
+                            <th>Quantity</th>
                             <th>Created_at</th>
                             <th>Action</th>
                         </tr>
@@ -72,6 +96,18 @@ if(!isset($_SESSION['admin_id']))
                             $image_name = $rows['image'];
                             $date = $rows['created_at'];
 
+                              // Define slot count color classes
+            $slot_warning_class = '';
+            if ($medical_slot >= 40 && $medical_slot <= 50) {
+                $slot_warning_class = 'green';
+            } elseif ($medical_slot >= 30 && $medical_slot < 40) {
+                $slot_warning_class = 'yellow';
+            } elseif ($medical_slot >= 10 && $medical_slot < 30) {
+                $slot_warning_class = 'orange';
+            } elseif ($medical_slot >= 0 && $medical_slot < 10) {
+                $slot_warning_class = 'red';
+            }
+
                             ?>
                         <tr>
 
@@ -80,12 +116,12 @@ if(!isset($_SESSION['admin_id']))
                             <td><?php echo $ids++;?></td>
                             <td><img src="medical_image/<?php echo $image_name?>" style="width: 70px;"></td>
                             <td><?php echo $medical_name;?></td>
-                            <td><?php echo $medical_slot;?></td>
+                            <td class="<?php echo $slot_warning_class; ?>"><?php echo $medical_slot; ?></td>
                             <td><?php echo $date;?></td>
                             <td>
                                 <a href="update_inventory.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
-                                <form action="code.php" method="post">
-                                    <button type="button"  class="btn-del delete_medicalbtn" value="<?= $id;?>">Delete</button>
+                                <form  method="post">
+                                        <button type="button" class="btn-del " value="<?php echo $id; ?>">Archive</button>
                                     </form>
                             </td>
                         </tr>
@@ -109,6 +145,39 @@ if(!isset($_SESSION['admin_id']))
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->
+
+
+    <script>
+    document.querySelectorAll('.btn-del').forEach(button => {
+    button.addEventListener('click', function() {
+        const medicalId = this.getAttribute('value');
+
+        if (confirm("Are you sure you want to archive this Inventory?")) {
+            fetch(`archives-medical.php?id=${medicalId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide the row upon successful archiving
+                    this.closest('tr').style.display = 'none';
+                } else {
+                    alert("Failed to archive the medical.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while archiving the medical.");
+            });
+        }
+    });
+});
+
+
+</script>
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../script.js"></script>

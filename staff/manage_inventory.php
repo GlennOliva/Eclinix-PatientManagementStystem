@@ -22,24 +22,49 @@ if(!isset($_SESSION['staff_id']))
 
 ?>
 
+<style>
+/* Define CSS classes for warning colors */
+.green {
+    color: lightgreen !important;
+
+}
+
+
+
+.yellow {
+    color: yellow !important;
+}
+
+.orange {
+    color: orange !important;
+}
+
+.red {
+    color: red !important;
+}
+
+</style>
+
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Manage Inventory</h1>
+			<h1 class="title">Manage Medicals</h1>
 			<ul class="breadcrumbs">
-				<li><a href="#">Staff</a></li>
+				<li><a href="#">Admin</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Manage Inventory</a></li>
+				<li><a href="#" class="active">Manage Medicals</a></li>
 			</ul>
 
             <div class="container mt-3 table-border">
+                <a href="add_inventory.php" class="btn btn-success btn-sm">Create</a>
                 <table class="table table-hover" id="admin_table">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Medical Image</th>
+                            <th>Image</th>
                             <th>Medical Name</th>
-                            <th>Medical slot</th>
+                            <th>Quantity</th>
                             <th>Created_at</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,6 +95,18 @@ if(!isset($_SESSION['staff_id']))
                             $image_name = $rows['image'];
                             $date = $rows['created_at'];
 
+                              // Define slot count color classes
+            $slot_warning_class = '';
+            if ($medical_slot >= 40 && $medical_slot <= 50) {
+                $slot_warning_class = 'green';
+            } elseif ($medical_slot >= 30 && $medical_slot < 40) {
+                $slot_warning_class = 'yellow';
+            } elseif ($medical_slot >= 10 && $medical_slot < 30) {
+                $slot_warning_class = 'orange';
+            } elseif ($medical_slot >= 0 && $medical_slot < 10) {
+                $slot_warning_class = 'red';
+            }
+
                             ?>
                         <tr>
 
@@ -78,9 +115,14 @@ if(!isset($_SESSION['staff_id']))
                             <td><?php echo $ids++;?></td>
                             <td><img src="../admin/medical_image/<?php echo $image_name?>" style="width: 70px;"></td>
                             <td><?php echo $medical_name;?></td>
-                            <td><?php echo $medical_slot;?></td>
+                            <td class="<?php echo $slot_warning_class; ?>"><?php echo $medical_slot; ?></td>
                             <td><?php echo $date;?></td>
-                            
+                            <td>
+                                <a href="update_inventory.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm">Update</a>
+                                <!-- <form action="../admin/code.php" method="post">
+                                    <button type="button"  class="btn-del delete_medicalbtn" value="<?= $id;?>">Delete</button>
+                                    </form> -->
+                            </td>
                         </tr>
                         <!-- More rows can be added here -->
 
@@ -105,6 +147,6 @@ if(!isset($_SESSION['staff_id']))
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../script.js"></script>
-    <script src="js/medical.js"></script>
+    <script src="../admin/js/medical.js"></script>
 </body>
 </html>

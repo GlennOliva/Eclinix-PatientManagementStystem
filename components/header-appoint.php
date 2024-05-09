@@ -41,99 +41,165 @@ if (isset($_SESSION['admin_id'])) {
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<link rel="stylesheet" href="../style.css">
+
+	<!-- FullCalendar CSS -->
+	<link
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  rel="stylesheet"
+/>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/flatpickr"
+></script>
+
+
+	<!-- FullCalendar CSS -->
+<link
+  href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"
+  rel="stylesheet"
+/>
+
+<!-- FullCalendar JavaScript -->
+<script
+  src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"
+></script>
+
+<!-- Optional: jQuery, if needed by FullCalendar -->
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+></script>
+
 	<title>Admin</title>
 </head>
 <body>
 
+<style>
 
+
+.side-menu > li {
+    padding: 10px;
+}
+
+.side-menu > li > a {
+    text-decoration: none;
+    color: black;
+}
+
+
+
+.side-dropdown {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* Hidden initially */
+}
+
+</style>
 
 
 
 	
 	<!-- SIDEBAR -->
 <section id="sidebar">
-<a href="#" class="brand" style="padding-top: 5%;">
+    <!-- Brand Section with Logo -->
+    <a href="#" class="brand" style="padding-top: 5%;">
         <img src="../image/eclinicx-logo.png" style="width: 95%; height: auto; padding-top: 25%;" alt="Logo"> 
-		  </a>
-		 
-		<ul class="side-menu">
-			<li style="padding-top: 3%;"><a href="dashboard.php" class=""><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li class="divider"  data-text="User Management">User Management</li>
-			<li>
-				<a href="manage_admin.php"><i class='bx bxs-user icon' ></i> Doctor </i></a>
-			</li>
+    </a>
+    
+    <!-- Main Menu -->
+    <ul class="side-menu" style="margin-top: 25%;">
+	<li onclick="toggleDropdown(event)" class="divider" data-text="Dashboard" style="color: black !important; ">
+            <i class='bx bxs-user-management icon'></i> Dashboard
+        </li>
+        
+        <!-- Dropdown for User Management -->
+        <ul class="sub-menu" style="display: none;">
+            <li><a href="dashboard.php"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
 
-			<li>
-				<a href="#" ><i class='bx bxs-user icon' ></i> Patient <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-				<li><a href="manage_patient.php">View Patient</a></li>
-					<li><a href="add_patient.php">Add Patient</a></li>
-	
-				</ul>
-			</li>
-
-			<li>
-				<a href="manage_staff.php" ><i class='bx bxs-user icon' ></i> Staff </a>
-			
-			
-			</li>
+        </ul>
 
 
+        <!-- User Management Section -->
+        <li onclick="toggleDropdown(event)" class="divider" data-text="User Management" style="color: black !important;">
+            <i class='bx bxs-user-management icon'></i> User Management
+        </li>
+        
+        <!-- Dropdown for User Management -->
+        <ul class="sub-menu" style="display: none;">
+            <li><a href="manage_admin.php"><i class='bx bxs-user icon'></i> Doctor</a></li>
+            <li><a href="manage_patient.php"><i class='bx bxs-user icon'></i> Patient</a></li>
+            <li><a href="manage_staff.php"><i class='bx bxs-user icon'></i> Staff</a></li>
+        </ul>
+        
+        <!-- Appointment Management Section -->
+        <li class="divider" data-text="Appointment Management" onclick="toggleDropdown(event)" style="color: black !important;">
+            <i class='bx bxs-book icon'></i> Appointment Management
+        </li>
+        
+        <!-- Dropdown for Appointment Management -->
+        <ul class="sub-menu" style="display: none;">
+		<li><a href="manage_appoint.php" class="active"><i class='bx bxs-calendar icon'></i> Appointment</a></li>
+        </ul>
+        
+        <!-- Patient Management Section -->
+        <li class="divider" data-text="Patient Management" onclick="toggleDropdown(event)" style="color: black !important;">
+            <i class='bx bxs-user-plus icon'></i> Patient Management
+        </li>
+        
+        <!-- Dropdown for Patient Management -->
+        <ul class="sub-menun" style="display: none;">
+            <li><a href="patient_records.php"><i class='bx bxs-user-plus icon'></i>Patient Records</a></li>
+            <li><a href="patient_list.php"><i class='bx bxs-user-detail icon'></i>Patient List</a></li>
+        </ul>
+        
+        <!-- Inventory Management Section -->
+        <li class="divider" data-text="Inventory Management" onclick="toggleDropdown(event)" style="color: black !important;">
+            <i class='bx bxs-capsule icon'></i> Inventory Management
+        </li>
+        
+        <!-- Dropdown for Inventory Management -->
+        <ul class="sub-menu" style="display: none;">
+            <li><a href="manage_inventory.php"><i class='bx bxs-capsule icon'></i>Medicine Records</a></li>
+			<li><a href="manage_equipments.php"><i class='bx bxs-store-alt icon'></i>Equipments Records</a></li>
+        </ul>
+        
+        <!-- Reporting and Analytics Section -->
+        <li class="divider" data-text="Reporting and Analytics" onclick="toggleDropdown(event)" style="color: black !important;">
+            <i class='bx bxs-report icon'></i> Reporting and Analytics
+        </li>
+        
+        <!-- Dropdown for Reporting and Analytics -->
+        <ul class="sub-menu" style="display: none;">
+		<li><a href="manage_report.php"><i class='bx bxs-report icon'></i>Manage Reports</a></li>
+        </ul>
 
 
-			<li class="divider" data-text="Appointment Management">Appointment Management</li>
-			<li>
-				<a href="#" class="active"><i class='bx bxs-book icon' ></i> Appointment manage <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="manage_appoint.php">View Appointment</a></li>
-				</ul>
-			</li>
-		
-			<li class="divider" data-text="Patient Management">Patient Management</li>
-			<li>
-				<a href="#"><i class='bx bxs-user-plus icon'></i> Patient Records <i class='bx bx-chevron-right icon-right'></i></a>
-				<ul class="side-dropdown">
-					<li><a href="patient_records.php">Patient Records</a></li>
-					<li><a href="add_patient_records.php">Add Patient Records</a></li>
+		<!-- Reporting and Analytics Section -->
+        <li class="divider" data-text="Archive Management" onclick="toggleDropdown(event)" style="color: black !important;">
+            <i class='bx bxs-report icon'></i> Archive Management
+        </li>
+        
+        <!-- Dropdown for Reporting and Analytics -->
+        <ul class="sub-menu" style="display: none;">
+		<li><a href="archive_patient.php"><i class='bx bxs-archive icon'></i>Patient Archive</a></li>
+		<!-- <li><a href="manage_report.php"><i class='bx bxs-archive icon'></i>Staff Archive</a></li>
+		<li><a href="manage_report.php"><i class='bx bxs-archive icon'></i>Admin Archive</a></li> -->
+		<li><a href="archive_medicine.php"><i class='bx bxs-archive icon'></i>Medicine Archive</a></li>
+		<li><a href="archive_equipment.php"><i class='bx bxs-archive icon'></i>Equipment Archive</a></li>
+		<li><a href="archive_records.php"><i class='bx bxs-archive icon'></i>Records Archive</a></li>
+        </ul>
+    </ul>
+    
+    <!-- JavaScript for Toggling Dropdowns -->
+    <script>
+        function toggleDropdown(event) {
+            const subMenu = event.currentTarget.nextElementSibling;
+            const isVisible = subMenu.style.display === 'block';
+            subMenu.style.display = isVisible ? 'none' : 'block';
+        }
+    </script>
+</section>
 
-				</ul>
-			</li>
-
-			<li>
-				<a href="#"><i class='bx bxs-user-circle icon'></i> Patient List<i class='bx bx-chevron-right icon-right'></i></a>
-				<ul class="side-dropdown">
-					<li><a href="patient_list.php">Patient List</a></li>
-				
-				</ul>
-			</li>
-
-			<li class="divider" data-text="Inventory Management">Inventory Management</li>
-			<li>
-				<a href="#"><i class='bx bxs-capsule icon' ></i> Inventory Manage <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="manage_inventory.php">Inventory Records</a></li>
-					<li><a href="add_inventory.php">Add Inventory</a></li>
-
-				</ul>
-			</li>
-
-
-			<li class="divider" data-text="Reporting & Analytics ">Reporting and Analytics</li>
-			<li>
-				<a href="#"><i class='bx bxs-report icon' ></i> Reports Management <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="manage_report.php">Manage Reports</a></li>
-				</ul>
-			</li>
-
-	
-
-
-
-		</ul>
-		
-	</section>
-	<!-- SIDEBAR -->
 
 	<!-- NAVBAR -->
 	<section id="content">
@@ -141,10 +207,7 @@ if (isset($_SESSION['admin_id'])) {
 		<nav>
 			<i class='bx bx-menu toggle-sidebar' ></i>
 			<form action="#"></form>
-			<a href="#" class="nav-link">
-				<i class='bx bxs-bell icon' ></i>
-				<span class="badge">5</span>
-			</a>
+		
 			
 		
 			<span class="divider"></span>

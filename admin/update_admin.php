@@ -229,7 +229,7 @@ if($result == True)
                 text: "Admin Successfully Update",
                 icon: "success"
             }).then(function() {
-                window.location = "manage_user.php";
+                window.location = "manage_admin.php";
             });
         </script>';
         

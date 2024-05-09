@@ -35,33 +35,52 @@ if(!isset($_SESSION['patient_id']))
         <!-- First column: Upcoming Visit -->
 
         <?php
-        $sql = "SELECT * FROM tbl_appoint";
-
-        $res = mysqli_query($conn,$sql);
-
-        if($res == true)
-        {
-            $count = mysqli_num_rows($res);
-
-            if($count > 0)
-            {
-                while($row = mysqli_fetch_assoc($res))
-                {
-                    $full_name = $row['full_name'];
-                    $date_raw = $row['date'];
-            $date_formatted = date('F d, Y', strtotime($date_raw));
-
-            // Format the time to "hh:mm AM/PM"
-            $time_raw = $row['time'];
-            $time_formatted = date('h:i A', strtotime($time_raw));
-                    $reason = $row['reason'];
-                }
-                
-            }
-        }
-        
-        ?>
-       <div class="col-md-5"> <!-- Use 5 columns out of 12 for a slightly smaller split -->
+       $full_name = 'N/A'; // Default values
+       $date_formatted = 'N/A';
+       $time_formatted = 'N/A';
+       $reason = 'N/A';
+       
+       if (isset($_SESSION['patient_id'])) {
+           $patient_id = $_SESSION['patient_id'];
+       
+           // Prepare the SQL statement with a parameter placeholder to prevent SQL injection
+           $stmt = $conn->prepare("SELECT full_name, date, time, reason FROM tbl_appoint WHERE patient_id = ?");
+           $stmt->bind_param("i", $patient_id);
+       
+           if ($stmt->execute()) {
+               // Get the result set
+               $res = $stmt->get_result();
+       
+               if ($res->num_rows > 0) {
+                   // Fetch the first row of the result
+                   $row = $res->fetch_assoc();
+       
+                   // Extract the required information
+                   $full_name = $row['full_name'] ?? 'N/A'; // Default to 'N/A' if null
+                   $date_raw = $row['date'] ?? '';
+                   $time_raw = $row['time'] ?? '';
+                   $reason = $row['reason'] ?? 'N/A';
+       
+                   // Format the date and time
+                   if ($date_raw) {
+                       $date_formatted = date('F d, Y', strtotime($date_raw));
+                   }
+       
+                   if ($time_raw) {
+                       $time_formatted = date('h:i A', strtotime($time_raw));
+                   }
+               }
+           } else {
+               echo "Error executing query: " . $stmt->error;
+           }
+       
+           // Close the prepared statement
+           $stmt->close();
+       } else {
+           echo "Patient ID is not set in session.";
+       }
+       ?>
+      <div class="col-md-5">
     <div class="content-data">
         <div class="head">
             <h3>Upcoming Visit</h3>
@@ -97,7 +116,7 @@ if(!isset($_SESSION['patient_id']))
 
                         
         <?php
-        $sql = "SELECT * FROM tbl_appoint";
+        $sql = "SELECT * FROM tbl_appoint WHERE patient_id = $patient_id AND status = 'Approve'";
 
         $res = mysqli_query($conn,$sql);
 

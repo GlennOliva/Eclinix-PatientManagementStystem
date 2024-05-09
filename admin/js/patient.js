@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 
     $('.delete_patientbtn').click(function (e){
+      console.log("Button clicked");
         e.preventDefault();
 
      

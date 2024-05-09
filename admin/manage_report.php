@@ -33,7 +33,7 @@ if(!isset($_SESSION['admin_id']))
 
             <div class="container mt-3 table-border">
               
-                <table class="table table-hover">
+                <table class="table table-hover" id="admin_table">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
@@ -42,7 +42,7 @@ if(!isset($_SESSION['admin_id']))
                             <th>Appointment Time</th>
                             <th>Reason</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <?php
@@ -83,9 +83,9 @@ if(!isset($_SESSION['admin_id']))
                                 <td><?php echo $reason;?></td>
                                 <td><?php echo $status;?></td>
                                 <td>
-                                <form action="code.php" method="post">
+                                <!-- <form action="code.php" method="post">
                                     <button type="button"  class="btn-del delete_appointbtn" value="<?= $id;?>">Delete</button>
-                                    </form>
+                                    </form> -->
                                 </td>
                             </tr>
                             <!-- More rows can be added here -->

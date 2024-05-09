@@ -83,7 +83,7 @@ if($result == True)
                                 <img src="medical_image/<?php echo $current_image;?>" style="width: 30%; margin: 2%;">
                             </div>
                             <div class="mb-3">
-                                <label for="inventoryImage" class="form-label">New Medical Image</label>
+                                <label for="inventoryImage" class="form-label">New Image</label>
                                 <input type="file" class="form-control" name="medicalImage">
                             </div>
                             <div class="mb-3">
@@ -91,7 +91,7 @@ if($result == True)
                                 <input type="text" class="form-control" name="medicalName" placeholder="Enter Medical Name" value="<?php echo $medical_name;?>">
                             </div>
                             <div class="mb-3">
-                                <label for="adminEmail" class="form-label">New Medical Slot</label>
+                                <label for="adminEmail" class="form-label">New Quantity</label>
                                 <input type="number" class="form-control" name="medicalSlot" placeholder="Enter Medical slot" value="<?php echo $medical_slot;?>">
                             </div>
                             

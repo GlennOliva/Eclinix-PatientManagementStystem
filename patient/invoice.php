@@ -17,6 +17,20 @@ if(!isset($_SESSION['patient_id'])) {
     </script>';
     exit;
 }
+
+// Check if 'record_id' is set in the URL
+if(!isset($_GET['record_id'])) {
+    echo '<script>
+        swal({
+            title: "Error",
+            text: "No record specified!",
+            icon: "error"
+        }).then(function() {
+            window.location = "prescription.php"; // Redirect to some other page
+        });
+    </script>';
+    exit;
+}
 ?>
 
 <!-- MAIN -->
@@ -79,20 +93,40 @@ if(!isset($_SESSION['patient_id'])) {
 
     <!-- Patient information section -->
     <?php
-                $sql = "SELECT p.id , p.date , p.full_name , p.address, r.age, r.prescriptions
-                FROM tbl_patient as p JOIN tbl_records as r ON p.id = r.patient_id WHERE p.id = $patient_id";
+                // Get the record ID from the query parameter
+$record_id = intval($_GET['record_id']);
+
+// Query to fetch the specific record based on the record ID
+$sql = "SELECT 
+            p.full_name, 
+            p.address,
+            r.id AS record_id,
+            r.age,
+            r.prescriptions,
+            r.illness,
+            r.treatment,
+            r.laboratory_req,
+            p.date AS patient_date
+        FROM 
+            tbl_records AS r
+        JOIN 
+            tbl_patient AS p 
+        ON 
+            r.patient_id = p.id
+        WHERE 
+            r.id = $record_id";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
                     $count = mysqli_num_rows($result);
                     $ids = 1;
                     if ($count > 0) {
                         while ($rows = mysqli_fetch_assoc($result)) {
-                            $id = $rows['id'];
+                            $id = $rows['record_id'];
                             $full_name = $rows['full_name'];
                             $address = $rows['address'];
                             $age = $rows['age'];
                             $prescriptions = $rows['prescriptions'];
-                            $date = $rows['date'];
+                            $date = $rows['patient_date'];
                             $date_formatted = date('F d, Y', strtotime($date));
                             ?>
     <div class="row">
@@ -108,7 +142,7 @@ if(!isset($_SESSION['patient_id'])) {
 <div class="row">
 <div class="column">Address: <?php echo $address;?></div> <!-- Patient address -->
     <div class="column" style="display: flex; justify-content: flex-end;">
-        <div style="margin-right: 10px;">Date: <?php echo htmlspecialchars($date_formatted);?></div> <!-- Right aligned -->
+        <div style="margin-right: 10px;">Date: <?php echo htmlspecialchars($date_formatted); ?></div> <!-- Right aligned -->
        
     </div>
 </div>

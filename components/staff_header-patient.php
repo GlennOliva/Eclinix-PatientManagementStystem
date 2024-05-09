@@ -57,12 +57,12 @@ if (isset($_SESSION['staff_id'])) {
 				<a href="#" class="active"><i class='bx bxs-user icon' ></i> Patient <i class='bx bx-chevron-right icon-right' ></i></a>
 				<ul class="side-dropdown">
 				<li><a href="manage_patient.php">View Patient</a></li>
-					<li><a href="add_patient.php">Add Patient</a></li>
 	
 				</ul>
 			</li>
 			<li><a href="patient_list.php" class=""><i class='bx bxs-user-circle icon'></i> Patient List</a></li>
-			<li><a href="manage_inventory.php" class=""><i class='bx bxs-file icon' ></i> Manage Inventory</a></li>
+			<li><a href="manage_inventory.php"><i class='bx bxs-capsule icon'></i>Medicine Records</a></li>
+			<li><a href="manage_equipments.php"><i class='bx bxs-store-alt icon'></i>Equipments Records</a></li>
 	
 	</section>
 	<!-- SIDEBAR -->

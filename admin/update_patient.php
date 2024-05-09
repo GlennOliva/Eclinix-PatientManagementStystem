@@ -1,5 +1,5 @@
 <?php
-include('../components/header-user.php');
+include('../components/header-patients.php');
 include('../config/dbcon.php');
 
 ?>

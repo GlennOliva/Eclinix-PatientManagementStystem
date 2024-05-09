@@ -167,18 +167,28 @@ if ($res == True) {
               id="appointmentDate"
             />
           </div>
-          <div class="form-group">
-  <label for="appointmentTime">Appointment Time</label>
-  <input
-    type="time"
-    class="form-control"
-    id="appointmentTime"
-    name="time"
-    min="09:00"  
-    max="14:00"  
-    step="1800" 
-  />
+       <!-- Adjust the time input field to allow only predefined 15-minute intervals -->
+       <div class="form-group">
+    <label for="appointmentTime">Appointment Time</label>
+    <select class="form-control" id="appointmentTime" name="time">
+        <!-- Generate times from 9:00 am to 2:00 pm in 15-minute increments -->
+        <?php
+        for ($hour = 9; $hour <= 13; $hour++) {
+            for ($minute = 0; $minute < 60; $minute += 15) {
+                // Convert 24-hour time to 12-hour time with AM/PM
+                $display_hour = ($hour > 12) ? $hour - 12 : $hour; // Convert to 12-hour format
+                $suffix = ($hour >= 12) ? 'PM' : 'AM'; // Determine AM/PM
+                $time = sprintf('%02d:%02d %s', $display_hour, $minute, $suffix); // Create display time
+                $value_time = sprintf('%02d:%02d', $hour, $minute); // Keep the actual time value for the option
+                echo "<option value=\"$value_time\">$time</option>";
+            }
+        }
+        ?>
+    </select>
 </div>
+
+
+
 
 
 
@@ -210,46 +220,66 @@ if (isset($_POST['add_appoint'])) {
     $patient_time = $_POST['time'];
     $patient_reason = $_POST['reason'];
 
-    // Check for existing appointment at the same date and time
-    $check_sql = "SELECT * FROM tbl_appoint WHERE date = '$patient_date' AND time = '$patient_time'";
-    $result = mysqli_query($conn, $check_sql);
+    // Validate the time is within the desired range
+    $allowed_times = array(
+        '09:00', '09:15', '09:30', '09:45',
+        '10:00', '10:15', '10:30', '10:45',
+        '11:00', '11:15', '11:30', '11:45',
+        '12:00', '12:15', '12:30', '12:45',
+        '13:00', '13:15', '13:30', '13:45', '14:00'
+    );
 
-    if (mysqli_num_rows($result) > 0) {
-        // There's already an appointment at this date and time
+    if (!in_array($patient_time, $allowed_times)) {
         echo '<script>
             swal({
-                title: "Error",
-                text: "The selected time is already booked. Please choose a different time.",
+                title: "Invalid Time",
+                text: "Please select a valid time between 9:00 am and 2:00 pm in 15-minute increments.",
                 icon: "error"
             });
         </script>';
     } else {
-        // Insert new appointment data
-        $insert_sql = "INSERT INTO tbl_appoint (full_name, date, time, reason , patient_id)
-                       VALUES ('$patient_name', '$patient_date', '$patient_time', '$patient_reason', '$patient_id')";
+        // Check for existing appointments at the same date and time
+        $check_sql = "SELECT * FROM tbl_appoint WHERE date = '$patient_date' AND time = '$patient_time'";
+        $result = mysqli_query($conn, $check_sql);
 
-        if (mysqli_query($conn, $insert_sql)) {
-            echo '<script>
-                swal({
-                    title: "Success",
-                    text: "Appointment Successfully Booked!",
-                    icon: "success"
-                }).then(function() {
-                    window.location = "manage_calendar.php";
-                });
-            </script>';
-        } else {
+        if (mysqli_num_rows($result) > 0) {
+            // An appointment already exists at the same time
             echo '<script>
                 swal({
                     title: "Error",
-                    text: "Failed to book appointment.",
+                    text: "The selected time is already booked. Please choose a different time.",
                     icon: "error"
                 });
             </script>';
+        } else {
+            // Insert new appointment
+            $insert_sql = "INSERT INTO tbl_appoint (full_name, date, time, reason, patient_id)
+                           VALUES ('$patient_name', '$patient_date', '$patient_time', '$patient_reason', '$patient_id')";
+
+            if (mysqli_query($conn, $insert_sql)) {
+                echo '<script>
+                    swal({
+                        title: "Success",
+                        text: "Appointment Successfully Booked!",
+                        icon: "success"
+                    }).then(function() {
+                        window.location = "manage_calendar.php";
+                    });
+                </script>';
+            } else {
+                echo '<script>
+                    swal({
+                        title: "Error",
+                        text: "Failed to book appointment. Please try again later.",
+                        icon: "error"
+                    });
+                </script>';
+            }
         }
     }
 }
 ?>
+
 
 
 

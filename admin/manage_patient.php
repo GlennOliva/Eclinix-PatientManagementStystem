@@ -1,5 +1,5 @@
 <?php
-include('../components/header-user.php');
+include('../components/header-patients.php');
 include('../config/dbcon.php');
 
 ?>
@@ -48,7 +48,6 @@ if(!isset($_SESSION['admin_id'])) {
                     <th>Address</th>
                     <th>Phone_number</th>
                     <th>Image</th>
-                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -69,7 +68,6 @@ if(!isset($_SESSION['admin_id'])) {
                             $address = $rows['address'];
                             $phone_number = $rows['phone_number'];
                             $image_name = $rows['image'];
-                            $status = $rows['status'];
                             ?>
                             <tr>
                                 <td><?php echo $ids++; ?></td>
@@ -80,11 +78,10 @@ if(!isset($_SESSION['admin_id'])) {
                                 <td><?php echo $address; ?></td>
                                 <td><?php echo $phone_number; ?></td>
                                 <td><img src="patient_image/<?php echo $image_name ?>" style="width: 70px;"></td>
-                                <td><?php echo $status; ?></td>
                                 <td>
                                     <a href="update_patient.php?id=<?php echo $id; ?>" class="btn btn-primary btn-sm">Update</a>
-                                    <form action="code.php" method="post">
-                                        <button type="button" class="btn-del delete_patientbtn" value="<?= $id; ?>">Delete</button>
+                                    <form  method="post">
+                                        <button type="button" class="btn-del " value="<?php echo $id; ?>">Archive</button>
                                     </form>
                                 </td>
                             </tr>
@@ -97,6 +94,38 @@ if(!isset($_SESSION['admin_id'])) {
         </table>
     </div>
 </main>
+
+<script>
+    document.querySelectorAll('.btn-del').forEach(button => {
+    button.addEventListener('click', function() {
+        const patientId = this.getAttribute('value');
+
+        if (confirm("Are you sure you want to archive this patient?")) {
+            fetch(`archives-patient.php?id=${patientId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide the row upon successful archiving
+                    this.closest('tr').style.display = 'none';
+                } else {
+                    alert("Failed to archive the patient.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while archiving the patient.");
+            });
+        }
+    });
+});
+
+
+</script>
 
 <!-- JavaScript to filter the table -->
 <script>
